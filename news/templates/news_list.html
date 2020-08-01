@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{%block head%}
+<title>News Detail|Blog</title>
+{%endblock%}
+
+{% block content %}
+<div class="container">
+    {% if messages %}
+
+    {% for message in messages %}
+    <script>
+      alert('{{ message }}')
+    </script>
+    {% endfor %}
+
+{% endif %}
+<form method="get">
+
+</form>
+   <h2 class="text-center">Latest News</h2><hr>
+<div class="col-md-12">
+    <form>
+        <input type="text" placeholder="Search News.." name="q" value="{{request.GET.q}}">
+        <input type="submit" value="Search" class="btn">
+    </form>
+
+       {% for user in users %}
+
+   <div class="panel panel-default col-md-3" style="background:whitesmoke; border: 5px solid #e8e4e4; border-radius:15px;">
+           <h4>{{user.title}}</h4>
+       {% if user.image %}
+       <img src="{{user.image.url}}"  height="150;" width="170"/>
+       {% endif %}
+       <p>{{user.content|truncatechars:30}}</p>
+      <a href="{% url 'news:news_detail' user.id %}">
+          <button type="button" class="btn btn-primary btn-xs pull-right">Read More...</button>
+      </a>
+       <a href="{% url 'news:delete' user.id %}">
+       <span class="glyphicon glyphicon-trash"></span>
+           </a>
+       <a href="{% url 'news:update' user.id %}">
+       <span class="glyphicon glyphicon-pencil"></span>
+           </a>
+   </div>
+
+   {% endfor %}
+
+</div>
+    <div class="clearfix"></div>
+
+     <div class="col-md-12 text-center">
+         {% if users.has_other_pages %}
+  <ul class="pagination">
+    {% if users.has_previous %}
+      <li><a href="?page={{ users.previous_page_number }}">&laquo;</a></li>
+    {% else %}
+      <li class="disabled"><span>&laquo;</span></li>
+    {% endif %}
+    {% for i in users.paginator.page_range %}
+      {% if users.number == i %}
+        <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+      {% else %}
+        <li><a href="?page={{ i }}">{{ i }}</a></li>
+      {% endif %}
+    {% endfor %}
+    {% if users.has_next %}
+      <li><a href="?page={{ users.next_page_number }}">&raquo;</a></li>
+    {% else %}
+      <li class="disabled"><span>&raquo;</span></li>
+    {% endif %}
+  </ul>
+{% endif %}
+     </div>
+    <div class="clearfix"></div>
+{%endblock%}
+
